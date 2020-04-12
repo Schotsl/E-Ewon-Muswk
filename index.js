@@ -2,13 +2,16 @@
 
 const Twitter = require('twitter');
 
+const dotenv = require('dotenv');
 const fs = require('fs');
 
+dotenv.config();
+
 const twitter = new Twitter({
-    consumer_key: 'TUdDQnqUlu8ExINXeHvbUTrBY',
-    consumer_secret: 'QJhD9xPYDklf8nWyiKMEvW4odh0si7EKalPz4lIwgcVS7T3pfa',
-    access_token_key: '1249293166383116288-soKQ8hv5DtRuwBBzpRVtAaRon9cdW4',
-    access_token_secret: '3vFfoHjg2988DdJlRWJU3NVE2lUqhEr1dUjxpoTkX3TO7',
+    consumer_key: process.env.CONSUMER_KEY,
+    consumer_secret: process.env.CONSUMER_SECRET,
+    access_token_key: process.env.ACCESS_TOKEN_KEY,
+    access_token_secret: process.env.ACCESS_TOKEN_SECRET
 });
 
 const options = { 
