@@ -1,0 +1,11 @@
+{
+  "name": "ewon-muswk",
+  "version": "1.0.0",
+  "description": "This application will watch Elon Musk's tweets, then they will be uwu-fied and posted as their own tweet.",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "twitter": "^1.7.1",
+  }
+}
