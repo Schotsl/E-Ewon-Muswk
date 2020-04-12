@@ -2,6 +2,7 @@
 
 const Twitter = require('twitter');
 
+const { performance } = require('perf_hooks');
 const dotenv = require('dotenv');
 const fs = require('fs');
 
@@ -49,8 +50,33 @@ function addTweeted(id) {
     fs.writeFileSync('tweeted.json', tweetedJSON);
 }
 
+function generateURLObject(text, array = []) {
+    // Map the input text and find the URL + generate an millis stamp
+    const pattern = new RegExp(/(?:https?|ftp):\/\/[\n\S]+/g);
+    const result = pattern.exec(text);
+    const object = {
+        url: result[0],
+        millis: performance.now()
+    }
+
+    // Add the URL / millis stamp object to the array
+    array.push(object);
+
+    // Remove the found URL from the text string
+    text = text.replace(object.url, object.millis);
+
+    // If there is still an URL in the string call this function another time
+    if (pattern.exec(text)) generateURLObject(text, array);
+    return array;
+}
+
 function uwufieText(text) {
-    // Speaks for itself hopefully..
+    const array = generateURLObject(text);
+
+    /// Replace all URL instances with their assigned millis stamps
+    array.forEach(object => text = text.replace(object.url, object.uuid));
+
+    // Uwufie the text
     text = text.replace(/(?:r|l)/g, "w");
     text = text.replace(/(?:R|L)/g, "W");
     text = text.replace(/n([aeiou])/g, 'ny$1');
@@ -58,6 +84,10 @@ function uwufieText(text) {
     text = text.replace(/N([AEIOU])/g, 'Ny$1');
     text = text.replace(/ove/g, "uv");
     text = text.replace(/\!+/g, " " + faces[Math.floor(Math.random() * faces.length)] + " ");
+
+    // Switch back the URL by searching for the millis stamps
+    array.forEach(object => text = text.replace(object.millis, object.url));
+
     return text;
 }
 
