@@ -14,8 +14,23 @@
     "url": "https://github.com/Schotsl/Iris-server/issues"
   },
   "main": "index.js",
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  },
   "dependencies": {
     "dotenv": "^8.2.0",
     "twitter": "^1.7.1"
+  },
+  "scripts": {
+    "serve": "nodemon",
+    "build": "node index.js"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      ".git",
+      "node_modules"
+    ],
+    "exec": "npm run build",
+    "ext": "js"
   }
 }
