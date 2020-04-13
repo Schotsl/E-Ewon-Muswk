@@ -117,4 +117,5 @@ function watchTwitter() {
     });
 }
 
+console.log("Stawted watching Ewon Musk's tweets OwO");
 setInterval(watchTwitter, 1500);
