@@ -15,7 +15,9 @@
   },
   "main": "index.js",
   "devDependencies": {
-    "nodemon": "^2.0.3"
+    "@types/node": "^13.11.1",
+    "nodemon": "^2.0.3",
+    "typescript": "^3.8.3"
   },
   "dependencies": {
     "dotenv": "^8.2.0",
@@ -23,14 +25,17 @@
   },
   "scripts": {
     "serve": "nodemon",
-    "build": "node index.js"
+    "build": "tsc && node dist/index.js"
   },
   "nodemonConfig": {
     "ignore": [
       ".git",
       "node_modules"
     ],
+    "watch": [
+      "src"
+    ],
     "exec": "npm run build",
-    "ext": "js"
+    "ext": "ts"
   }
 }
