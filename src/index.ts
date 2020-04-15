@@ -1,13 +1,14 @@
 "use strict"
 
 import { watchUser, sendTweet } from "./twitter";
-import { uwufySentence, uwuFace } from "./uwufier";
 
-watchUser('1249293166383116288', true, false)
+import { uwufySentence, uwuFace } from "uwufier";
+
+watchUser('44196397', true, false)
 .on('error', (error) => console.error(error))
 .on('tweeted', copyUwuTweet);
 
-watchUser('1249293166383116288', false, false)
+watchUser('44196397', false, false)
 .on('error', error => console.error(error))
 .on('tweeted', replyUwuFace);
 
