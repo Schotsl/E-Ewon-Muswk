@@ -1,91 +1,100 @@
-"use strict"
+"use strict";
 
-import { EventEmitter } from "events";
+const Twitter = require("twitter");
+const dotenv = require("dotenv");
+const events = require("events");
+const fs = require("fs");
 
-const Twitter = require('twitter');
-const dotenv = require('dotenv');
-const events = require('events');
-const fs = require('fs');
+import { EventEmitter as EventEmittew } from "events";
+import { jsonPawse, JsonStwingify } from "./Helpers/Functions";
+import { stwing, boowean } from "./Helpers/Types";
 
-let tweetedArray = [];
+let tweetedAwway = [];
 let tweetedRead = false;
 
 dotenv.config();
 
 // Cweate a Twittew instance with dotenv vawiabwes
 const twitter = new Twitter({
-    consumer_key: process.env.CONSUMER_KEY,
-    consumer_secret: process.env.CONSUMER_SECRET,
-    access_token_key: process.env.ACCESS_TOKEN_KEY,
-    access_token_secret: process.env.ACCESS_TOKEN_SECRET
+  consumer_key: process.env.CONSUMER_KEY,
+  consumer_secret: process.env.CONSUMER_SECRET,
+  access_token_key: process.env.ACCESS_TOKEN_KEY,
+  access_token_secret: process.env.ACCESS_TOKEN_SECRET,
 });
 
 interface configInterface {
-    status: string;
-    in_reply_to_status_id?: string
+  status: stwing;
+  in_weply_to_status_id?: stwing;
 }
 
 function getTweeted() {
-    // Check if the JSON fiwe has been wead and wetuwn it
-    if (tweetedRead) return tweetedArray;
+  // Check if the JSON fiwe has been wead and wetuwn it
+  if (tweetedRead) return tweetedAwway;
 
-    // If the fiwe doesn't exists cweate it
-    if (!fs.existsSync('tweeted.json')) addTweeted();
+  // If the fiwe doesn't exists cweate it
+  if (!fs.existsSync("tweeted.json")) addTweeted();
 
-    // Wead the JSON fiwe and wetuwn the awway
-    const tweetedJSON = fs.readFileSync('tweeted.json');
-    tweetedArray = JSON.parse(tweetedJSON);
-    return tweetedArray;
+  // Wead the JSON fiwe and wetuwn the awway
+  const tweetedJSON = fs.readFileSync("tweeted.json");
+  tweetedAwway = jsonPawse(tweetedJSON);
+  return tweetedAwway;
 }
 
-function addTweeted(id?) {
-    // Add the nyew tweet ID to the tweeted awway
-    if (id) tweetedArray.push(id);
+function addTweeted(id?: number) {
+  // Add the nyew tweet ID to the tweeted awway
+  if (id) tweetedAwway.push(id);
 
-    // Save the nyew tweeted awway in a JSON fiwe
-    const tweetedJSON = JSON.stringify(tweetedArray);
-    fs.writeFileSync('tweeted.json', tweetedJSON);
+  // Save the nyew tweeted awway in a JSON fiwe
+  const tweetedJSON = JsonStwingify(tweetedAwway);
+  fs.writeFileSync("tweeted.json", tweetedJSON);
 }
 
-export function sendTweet(tweetContent: string, tweetId?: string): Promise<Object> {
-    // Cweate Twittew configuwation object
-    const configObject: configInterface = { status: tweetContent };
-    if (tweetId) configObject.in_reply_to_status_id = tweetId;
+export function sendTweet(
+  tweetContent: stwing,
+  tweetId?: stwing
+): Promise<Object> {
+  // Cweate Twittew configuwation object
+  const configObject: configInterface = { status: tweetContent };
+  if (tweetId) configObject.in_weply_to_status_id = tweetId;
 
-    // Tweet out the tweet and wesowve ow weject the wesuwts
-    return new Promise((resolve, reject) => {
-        twitter.post('statuses/update', configObject, (error, data) => {
-            if (error) reject(error);
-            if (data) resolve(data);
-        }); 
+  // Tweet out the tweet and wesowve ow weject the wesuwts
+  return new Promise((wesolve, weject) => {
+    twitter.post("statuses/update", configObject, (ewwor, data) => {
+      if (ewwor) wesolve(ewwor);
+      if (data) weject(data);
     });
+  });
 }
 
-export function watchUser(userId: string, exluceReplies: boolean = false, includeRetweets: boolean = false): EventEmitter {
-    const configObjct = {
-        exclude_replies: exluceReplies,
-        include_rts: includeRetweets, 
-        tweet_mode: 'extended',
-        user_id: userId,
-        count: 1
-    }
+export function watchUser(
+  usewId: stwing,
+  exludeWeplies: boowean = false,
+  includeWetweets: boowean = false
+): EventEmittew {
+  const configObjct = {
+    exclude_replies: exludeWeplies,
+    include_rts: includeWetweets,
+    tweet_mode: "extended",
+    user_id: usewId,
+    count: 1,
+  };
 
-    const emmiter = new events.EventEmitter();
+  const emmitew = new events.EventEmittew();
 
-    // Cweate a wwappew function fow fetching the tweet
-    const fetchTweet = function() {
-        twitter.get('statuses/user_timeline', configObjct, (error, data) => {
-            if (error) emmiter.emit('error', error);
-            const currentTweet = data[0];
+  // Cweate a wwappew function fow fetching the tweet
+  const fetchTweet = (): void => {
+    twitter.get("statuses/user_timeline", configObjct, (ewwor, data) => {
+      if (ewwor) emmitew.emit("error", ewwor);
+      const cuwwentTweet = data[0];
 
-            if (!getTweeted().includes(currentTweet.id)) {
-                emmiter.emit('tweeted', currentTweet);
-                addTweeted(currentTweet.id);
-            }
-        });
-    }  
+      if (!getTweeted().includes(cuwwentTweet.id)) {
+        emmitew.emit("tweeted", cuwwentTweet);
+        addTweeted(cuwwentTweet.id);
+      }
+    });
+  };
 
-    // I've set a wow intewvaw so we can have mutwipwe watch instances without hitting the API wimit
-    setInterval(fetchTweet, 10000);
-    return emmiter;
+  // I've set a wow intewvaw so we can have mutwipwe watch instances without hitting the API wimit
+  setInterval(fetchTweet, 10000);
+  return emmitew;
 }
