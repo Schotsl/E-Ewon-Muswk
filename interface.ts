@@ -1,9 +1,14 @@
-export interface Tweet {
-  id: string;
-}
+// deno-lint-ignore-file camelcase
 
-export interface User {
+interface User {
   description: string;
   location: string;
   url: string;
+}
+
+interface Tweet {
+  id: string;
+  user: User;
+  id_str: string;
+  full_text: string;
 }
